@@ -16,11 +16,13 @@ import org.eclipse.keyple.core.service.Plugin
 import org.eclipse.keyple.core.service.PluginFactory
 import org.eclipse.keyple.core.service.exception.KeypleReaderIOException
 
-object AndroidCoppernicAskPluginFactory : PluginFactory {
+object Cone2PluginFactory : PluginFactory {
 
     @Throws(KeypleReaderIOException::class)
-    suspend fun init(context: Context): AndroidCoppernicAskPluginFactory {
-        val plugin = AskReader.init(context)
+    suspend fun init(context: Context): Cone2PluginFactory {
+        println(">>> ")
+        println(">>> Cone2PluginFactory.init - ParagonReader.init...")
+        val plugin = ParagonReader.init(context)
         return plugin?.let {
             this
         }
@@ -28,10 +30,10 @@ object AndroidCoppernicAskPluginFactory : PluginFactory {
     }
 
     override fun getPluginName(): String {
-        return AndroidCoppernicAskPlugin.PLUGIN_NAME
+        return Cone2Plugin.PLUGIN_NAME
     }
 
     override fun getPlugin(): Plugin {
-        return AndroidCoppernicAskPluginImpl()
+        return Cone2PluginImpl()
     }
 }

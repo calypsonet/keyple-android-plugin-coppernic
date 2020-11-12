@@ -11,7 +11,7 @@
  ********************************************************************************/
 package org.eclipse.keyple.coppernic.ask.plugin
 
-interface AndroidCoppernicAskContactlessReader {
+interface Cone2ContactlessReader {
     companion object {
         const val READER_NAME = "AndroidCoppernicAskContactlessReader"
 

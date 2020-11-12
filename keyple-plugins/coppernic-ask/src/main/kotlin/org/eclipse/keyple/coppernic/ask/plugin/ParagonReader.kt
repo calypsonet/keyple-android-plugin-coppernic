@@ -35,7 +35,7 @@ import timber.log.Timber
 /**
  * Provides one instance of ASK reader to be shared between contact and contactless reader.
  */
-internal object AskReader : PowerListener {
+internal object ParagonReader : PowerListener {
 
     private const val ASK_INIT_TIMEOUT: Long = 10000
     private const val POWER_UP_TIMEOUT: Long = 3000
@@ -64,11 +64,12 @@ internal object AskReader : PowerListener {
                 suspendCoroutineWithTimeout(POWER_UP_TIMEOUT) { continuation ->
                     powerListenerContinuation = continuation
 
-                    PowerManager.get().registerListener(this@AskReader)
+                    PowerManager.get().registerListener(this@ParagonReader)
                     ConePeripheral.RFID_ASK_UCM108_GPIO.on(context)
                 }
             Timber.d("Powered on : $isPoweredOn")
 
+            println(">>> ParagonReader.init - isPoweredOn : $isPoweredOn")
             if (isPoweredOn != null && isPoweredOn) {
                 val reader: Reader? = suspendCoroutineWithTimeout(ASK_INIT_TIMEOUT) { continuation ->
                     Reader.getInstance(context, object : InstanceListener<Reader> {
@@ -78,22 +79,26 @@ internal object AskReader : PowerListener {
                                 reader.cscOpen(Defines.SerialDefines.ASK_READER_PORT, 115200, false)
 
                             if (result != fr.coppernic.sdk.ask.Defines.RCSC_Ok) {
+                                println(">>> ParagonReader.onCreated - result 1 KO -> STOP")
                                 Timber.e("Error while cscOpen: $result")
                                 continuation.resumeWithException(KeypleReaderIOException("Error while cscOpen: $result"))
                                 return
                             }
-
+                            println(">>> ParagonReader.onCreated - result 1 OK")
                             // Initializes reader
                             val sb = StringBuilder()
                             result = reader.cscVersionCsc(sb)
 
                             if (result != fr.coppernic.sdk.ask.Defines.RCSC_Ok) {
+                                println(">>> ParagonReader.onCreated - result version KO !!")
                                 Timber.w("Error while cscVersionCsc: $result")
                             }
+                            println(">>> ParagonReader.onCreated - result version OK")
 
                             uniqueInstance = WeakReference(reader)
                             isInitied.set(true)
                             Timber.d("End Init")
+                            println(">>> ParagonReader.onCreated - reader : $reader")
                             continuation.resume(reader)
                         }
 

@@ -24,17 +24,17 @@ import timber.log.Timber
  * Keyple SE Reader's Implementation for the Coppernic ASK Contact (SAM access) reader
  */
 @Suppress("INVISIBLE_ABSTRACT_MEMBER_FROM_SUPER_WARNING")
-internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: ContactInterface) :
+internal class Cone2ContactReaderImpl(val contactInterface: ContactInterface) :
     AbstractLocalReader(
-        AndroidCoppernicAskPlugin.PLUGIN_NAME,
-        "${AndroidCoppernicAskContactReader.READER_NAME}_${contactInterface.slotId}"
-    ), AndroidCoppernicAskContactReader {
+        Cone2Plugin.PLUGIN_NAME,
+        "${Cone2ContactReader.READER_NAME}_${contactInterface.slotId}"
+    ), Cone2ContactReader {
 
     enum class ContactInterface(val slotId: Byte) {
         ONE(1.toByte()), TWO(2.toByte())
     }
 
-    private val reader = AskReader.getInstance()
+    private val reader = ParagonReader.getInstance()
     private val apduOut = ByteArray(260)
     private val apduOutLen = IntArray(1)
     var atr: ByteArray? = null
@@ -45,7 +45,7 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
 
     override fun openPhysicalChannel() {
         try {
-            AskReader.acquireLock()
+            ParagonReader.acquireLock()
             // val samSlot = getSetSamSlot()
             val result =
                 reader.cscSelectSam(contactInterface.slotId, Defines.SAM_PROT_HSP_INNOVATRON)
@@ -66,7 +66,7 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
 
             // isPhysicalChannelOpened.set(true);
         } finally {
-            AskReader.releaseLock()
+            ParagonReader.releaseLock()
         }
     }
 
@@ -78,7 +78,8 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
                 Supports up to 2 SAMs: ISO 7816 A,B,C, T=0, T=1, with PPS up to 1.2 Mb/s
                 ..."
          */
-        return readerProtocolName == ContactsCardCommonProtocols.ISO_7816_3.name
+        return readerProtocolName == ParagonSupportedContactProtocols.ISO_7816_3_T0.name ||
+                readerProtocolName == ParagonSupportedContactProtocols.ISO_7816_3_T1.name
     }
 
     override fun deactivateReaderProtocol(readerProtocolName: String?) {
@@ -99,13 +100,13 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
 
     override fun checkCardPresence(): Boolean {
         return try {
-            AskReader.acquireLock()
+            ParagonReader.acquireLock()
             // val samSlot = getSetSamSlot()
             val result =
                 reader.cscSelectSam(contactInterface.slotId, Defines.SAM_PROT_HSP_INNOVATRON)
             result == RCSC_Ok
         } finally {
-            AskReader.releaseLock()
+            ParagonReader.releaseLock()
         }
     }
 
@@ -117,7 +118,7 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
         Timber.d("Data Length to be sent to tag : ${apduIn.size}")
         Timber.d("Data In : ${ByteArrayUtil.toHex(apduIn)}")
         try {
-            AskReader.acquireLock()
+            ParagonReader.acquireLock()
             Timber.d("KEYPLE-APDU-SAM - Data Length to be sent to tag : ${apduIn.size}")
             Timber.d("KEYPLE-APDU-SAM - Data In : ${ByteArrayUtil.toHex(apduIn)}")
             val result = reader.cscIsoCommandSam(apduIn, apduIn.size, apduOut, apduOutLen)
@@ -137,7 +138,7 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
                 }
             }
         } finally {
-            AskReader.releaseLock()
+            ParagonReader.releaseLock()
         }
     }
 }

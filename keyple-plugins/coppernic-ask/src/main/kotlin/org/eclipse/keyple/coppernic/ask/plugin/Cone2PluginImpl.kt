@@ -20,24 +20,24 @@ import timber.log.Timber
 /**
  * Handle native Readers mapped for Keyple
  */
-internal class AndroidCoppernicAskPluginImpl : AbstractPlugin(AndroidCoppernicAskPlugin.PLUGIN_NAME), AndroidCoppernicAskPlugin {
+internal class Cone2PluginImpl : AbstractPlugin(Cone2Plugin.PLUGIN_NAME), Cone2Plugin {
 
     override fun initNativeReaders(): ConcurrentMap<String, Reader> {
         Timber.w("Init native readers")
         val seReaders = ConcurrentHashMap<String, Reader>()
-        val sam1 = AndroidCoppernicAskContactReaderImpl(AndroidCoppernicAskContactReaderImpl.ContactInterface.ONE)
+        val sam1 = Cone2ContactReaderImpl(Cone2ContactReaderImpl.ContactInterface.ONE)
         seReaders[sam1.name] = sam1
-        val sam2 = AndroidCoppernicAskContactReaderImpl(AndroidCoppernicAskContactReaderImpl.ContactInterface.TWO)
+        val sam2 = Cone2ContactReaderImpl(Cone2ContactReaderImpl.ContactInterface.TWO)
         seReaders[sam2.name] = sam2
-        val nfc = AndroidCoppernicAskContactlessReaderImpl()
+        val nfc = Cone2ContactlessReaderImpl()
         seReaders[nfc.name] = nfc
         return seReaders
     }
 
     override fun unregister() {
         readers.forEach {
-            if(it.value is AndroidCoppernicAskContactlessReaderImpl){
-                (it.value as AndroidCoppernicAskContactlessReaderImpl).clearInstance()
+            if(it.value is Cone2ContactlessReaderImpl){
+                (it.value as Cone2ContactlessReaderImpl).clearInstance()
             }
         }
         super.unregister()

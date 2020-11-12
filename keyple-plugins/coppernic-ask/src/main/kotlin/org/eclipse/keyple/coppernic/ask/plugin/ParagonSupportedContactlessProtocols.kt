@@ -18,8 +18,13 @@ package org.eclipse.keyple.coppernic.ask.plugin
  *  @author youssefamrani
  */
 
-enum class AndroidCoppernicSupportedProtocols {
-    NFC_A_ISO_14443_3A,
-    NFC_B_ISO_14443_3B,
-    NFC_B_ISO_14443_INNO
+enum class ParagonSupportedContactlessProtocols {
+    ISO_14443,
+    ISO_14443_A,
+    ISO_14443_B,
+    INNOVATRON_B_PRIME,
+    TICKET_CTS_CTM,
+    MIFARE,
+    FELICA,
+    MV5000
 }
