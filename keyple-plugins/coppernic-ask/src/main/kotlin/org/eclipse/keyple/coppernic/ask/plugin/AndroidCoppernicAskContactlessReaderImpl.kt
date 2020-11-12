@@ -1,18 +1,28 @@
+/********************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association https://www.calypsonet-asso.org/
+ *
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
 package org.eclipse.keyple.coppernic.ask.plugin
 
 import fr.coppernic.sdk.ask.Defines
 import fr.coppernic.sdk.ask.RfidTag
 import fr.coppernic.sdk.ask.sCARD_SearchExt
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 import org.eclipse.keyple.core.plugin.reader.AbstractObservableLocalReader
 import org.eclipse.keyple.core.plugin.reader.ObservableReaderStateService
 import org.eclipse.keyple.core.plugin.reader.SmartInsertionReader
 import org.eclipse.keyple.core.service.exception.KeypleReaderIOException
-import org.eclipse.keyple.core.service.util.ContactlessCardCommonProtocols
+import org.eclipse.keyple.core.service.exception.KeypleReaderProtocolNotSupportedException
 import org.eclipse.keyple.core.util.ByteArrayUtil
 import timber.log.Timber
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicBoolean
-
 
 /**
  * Implementation of {@link org.eclipse.keyple.core.seproxy.SeReader} to communicate with NFC Tag
@@ -161,7 +171,7 @@ class AndroidCoppernicAskContactlessReaderImpl : AbstractObservableLocalReader(
                 search,
                 mask,
                 0x00.toByte(),
-                HUNT_PHASE_TIMEOUT, //No timeout specified
+                HUNT_PHASE_TIMEOUT, // No timeout specified
                 com,
                 lpcbAtr,
                 atr
@@ -189,7 +199,6 @@ class AndroidCoppernicAskContactlessReaderImpl : AbstractObservableLocalReader(
             val dataReceived = ByteArray(256)
             val dataReceivedLength = IntArray(1)
 
-
             Timber.d("KEYPLE-APDU-SAM - Data Length to be sent to tag : ${apduIn.size}")
             Timber.d("KEYPLE-APDU-SAM - Data In : ${ByteArrayUtil.toHex(apduIn)}")
             reader.cscISOCommand(apduIn, apduIn.size, dataReceived, dataReceivedLength)
@@ -201,10 +210,9 @@ class AndroidCoppernicAskContactlessReaderImpl : AbstractObservableLocalReader(
                 throw KeypleReaderIOException("Incorrect APDU Answer")
             } else {
                 val apduAnswer = ByteArray(length - 1)
-                System.arraycopy(dataReceived, 1, apduAnswer, 0, apduAnswer.size);
+                System.arraycopy(dataReceived, 1, apduAnswer, 0, apduAnswer.size)
                 return apduAnswer
             }
-
         } finally {
             AskReader.releaseLock()
         }

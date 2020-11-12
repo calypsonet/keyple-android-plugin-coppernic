@@ -1,3 +1,14 @@
+/********************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association https://www.calypsonet-asso.org/
+ *
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
 package org.eclipse.keyple.coppernic.ask.plugin
 
 import fr.coppernic.sdk.ask.Defines
@@ -8,7 +19,6 @@ import org.eclipse.keyple.core.service.exception.KeypleReaderIOException
 import org.eclipse.keyple.core.service.util.ContactsCardCommonProtocols
 import org.eclipse.keyple.core.util.ByteArrayUtil
 import timber.log.Timber
-
 
 /**
  * Keyple SE Reader's Implementation for the Coppernic ASK Contact (SAM access) reader
@@ -24,7 +34,6 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
         ONE(1.toByte()), TWO(2.toByte())
     }
 
-
     private val reader = AskReader.getInstance()
     private val apduOut = ByteArray(260)
     private val apduOutLen = IntArray(1)
@@ -37,7 +46,7 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
     override fun openPhysicalChannel() {
         try {
             AskReader.acquireLock()
-            //val samSlot = getSetSamSlot()
+            // val samSlot = getSetSamSlot()
             val result =
                 reader.cscSelectSam(contactInterface.slotId, Defines.SAM_PROT_HSP_INNOVATRON)
             if (result != RCSC_Ok) {
@@ -55,7 +64,7 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
                 this.atr = null
             }
 
-            //isPhysicalChannelOpened.set(true);
+            // isPhysicalChannelOpened.set(true);
         } finally {
             AskReader.releaseLock()
         }
@@ -73,7 +82,7 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
     }
 
     override fun deactivateReaderProtocol(readerProtocolName: String?) {
-        //Do nothing
+        // Do nothing
     }
 
     override fun isContactless(): Boolean {
@@ -81,7 +90,7 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
     }
 
     override fun activateReaderProtocol(readerProtocolName: String?) {
-        //Do nothing
+        // Do nothing
     }
 
     override fun isPhysicalChannelOpen(): Boolean {
@@ -91,7 +100,7 @@ internal class AndroidCoppernicAskContactReaderImpl(val contactInterface: Contac
     override fun checkCardPresence(): Boolean {
         return try {
             AskReader.acquireLock()
-            //val samSlot = getSetSamSlot()
+            // val samSlot = getSetSamSlot()
             val result =
                 reader.cscSelectSam(contactInterface.slotId, Defines.SAM_PROT_HSP_INNOVATRON)
             result == RCSC_Ok

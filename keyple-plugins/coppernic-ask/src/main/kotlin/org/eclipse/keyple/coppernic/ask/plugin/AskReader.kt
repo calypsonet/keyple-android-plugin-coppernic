@@ -1,3 +1,14 @@
+/********************************************************************************
+ * Copyright (c) 2020 Calypso Networks Association https://www.calypsonet-asso.org/
+ *
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ********************************************************************************/
 package org.eclipse.keyple.coppernic.ask.plugin
 
 import android.content.Context
@@ -9,21 +20,22 @@ import fr.coppernic.sdk.power.api.peripheral.Peripheral
 import fr.coppernic.sdk.power.impl.cone.ConePeripheral
 import fr.coppernic.sdk.utils.core.CpcResult
 import fr.coppernic.sdk.utils.io.InstanceListener
-import org.eclipse.keyple.coppernic.ask.plugin.utils.suspendCoroutineWithTimeout
-import org.eclipse.keyple.core.service.exception.KeypleReaderException
-import org.eclipse.keyple.core.service.exception.KeypleReaderIOException
-import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import org.eclipse.keyple.coppernic.ask.plugin.utils.suspendCoroutineWithTimeout
+import org.eclipse.keyple.core.service.exception.KeyplePluginInstantiationException
+import org.eclipse.keyple.core.service.exception.KeypleReaderException
+import org.eclipse.keyple.core.service.exception.KeypleReaderIOException
+import timber.log.Timber
 
 /**
  * Provides one instance of ASK reader to be shared between contact and contactless reader.
  */
-internal object AskReader: PowerListener {
+internal object AskReader : PowerListener {
 
     private const val ASK_INIT_TIMEOUT: Long = 10000
     private const val POWER_UP_TIMEOUT: Long = 3000
